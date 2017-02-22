@@ -49,5 +49,58 @@ namespace BookApp_WinForms
             lst_Books.Items.Add(AB2);
             lst_Books.Items.Add(AB3);
         }
+
+        private void lst_Books_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Book sel = lst_Books.SelectedItems[0] as Book;
+
+            if (sel is PhysicalBook)
+            {
+                try
+                {
+                    PhysicalBook pbk = (PhysicalBook)sel;
+                    lst_BookProps.Items.Add(pbk.AllProps());
+                    lst_BookProps.Items.Add(pbk.Title);
+                    List<string> props = new List<string>();
+                    foreach (var prop in pbk.GetType().GetProperties())
+                    {
+                        //reflect into the pbk object to get the properties
+                        var name = prop.Name;
+                        var value = prop.GetValue(pbk);
+                        lst_BookProps.Items.Add(name + " " + prop);
+                        //Console.WriteLine("{0}={1}", prop.Name, prop.GetValue(pbk, null));
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Something went wrong", "Error");
+                }
+            }
+            else if (sel is EBook)
+            {
+                try
+                {
+                    EBook ebk = (EBook)sel;
+                    lst_BookProps.Items.Add(ebk.Title);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Something went wrong", "Error");
+                }
+            }
+            else if (sel is AudioBook)
+            {
+                try
+                {
+                    AudioBook abk = (AudioBook)sel;
+                    lst_BookProps.Items.Add(abk.FileSize);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Something went wrong", "Error");
+                }
+            }
+            //MessageBox.Show(sender.ToString());
+        }
     }
 }

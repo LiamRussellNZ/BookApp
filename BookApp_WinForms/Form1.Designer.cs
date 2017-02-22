@@ -32,6 +32,8 @@
             this.btn_LoadPhysical = new System.Windows.Forms.Button();
             this.btn_LoadeBooks = new System.Windows.Forms.Button();
             this.btn_LoadAudioBooks = new System.Windows.Forms.Button();
+            this.lst_BookProps = new System.Windows.Forms.ListBox();
+            this.lbl_BookList = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lst_Books
@@ -41,6 +43,7 @@
             this.lst_Books.Name = "lst_Books";
             this.lst_Books.Size = new System.Drawing.Size(334, 186);
             this.lst_Books.TabIndex = 0;
+            this.lst_Books.SelectedIndexChanged += new System.EventHandler(this.lst_Books_SelectedIndexChanged);
             // 
             // btn_LoadPhysical
             // 
@@ -72,11 +75,30 @@
             this.btn_LoadAudioBooks.UseVisualStyleBackColor = true;
             this.btn_LoadAudioBooks.Click += new System.EventHandler(this.btn_LoadAudioBooks_Click);
             // 
+            // lst_BookProps
+            // 
+            this.lst_BookProps.FormattingEnabled = true;
+            this.lst_BookProps.Location = new System.Drawing.Point(12, 270);
+            this.lst_BookProps.Name = "lst_BookProps";
+            this.lst_BookProps.Size = new System.Drawing.Size(482, 407);
+            this.lst_BookProps.TabIndex = 4;
+            // 
+            // lbl_BookList
+            // 
+            this.lbl_BookList.AutoSize = true;
+            this.lbl_BookList.Location = new System.Drawing.Point(157, 27);
+            this.lbl_BookList.Name = "lbl_BookList";
+            this.lbl_BookList.Size = new System.Drawing.Size(51, 13);
+            this.lbl_BookList.TabIndex = 5;
+            this.lbl_BookList.Text = "Book List";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(537, 310);
+            this.ClientSize = new System.Drawing.Size(540, 731);
+            this.Controls.Add(this.lbl_BookList);
+            this.Controls.Add(this.lst_BookProps);
             this.Controls.Add(this.btn_LoadAudioBooks);
             this.Controls.Add(this.btn_LoadeBooks);
             this.Controls.Add(this.btn_LoadPhysical);
@@ -84,6 +106,7 @@
             this.Name = "Form1";
             this.Text = "BookApp";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -93,6 +116,8 @@
         private System.Windows.Forms.Button btn_LoadPhysical;
         private System.Windows.Forms.Button btn_LoadeBooks;
         private System.Windows.Forms.Button btn_LoadAudioBooks;
+        private System.Windows.Forms.ListBox lst_BookProps;
+        private System.Windows.Forms.Label lbl_BookList;
     }
 }
 

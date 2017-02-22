@@ -38,7 +38,12 @@ namespace BookApp_WinForms
         //Methods
         public override string ToString()
         {
-            return Title.ToString() + ": Physcial Book";
+            return Title.ToString() + ": Physical Book";
+        }
+
+        public string AllProps()
+        {
+            return "Title: " + Title.ToString() + ", Author: " + Author.ToString() + ", Year: " + Year.ToString() + ", Weight: " + Weight.ToString() + ", PageCount: " + PageCount.ToString();
         }
     }
 }
