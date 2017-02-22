@@ -59,17 +59,7 @@ namespace BookApp_WinForms
                 try
                 {
                     PhysicalBook pbk = (PhysicalBook)sel;
-                    lst_BookProps.Items.Add(pbk.AllProps());
-                    lst_BookProps.Items.Add(pbk.Title);
-                    List<string> props = new List<string>();
-                    foreach (var prop in pbk.GetType().GetProperties())
-                    {
-                        //reflect into the pbk object to get the properties
-                        var name = prop.Name;
-                        var value = prop.GetValue(pbk);
-                        lst_BookProps.Items.Add(name + " " + prop);
-                        //Console.WriteLine("{0}={1}", prop.Name, prop.GetValue(pbk, null));
-                    }
+                    GetProps(pbk);
                 }
                 catch (Exception)
                 {
@@ -81,7 +71,7 @@ namespace BookApp_WinForms
                 try
                 {
                     EBook ebk = (EBook)sel;
-                    lst_BookProps.Items.Add(ebk.Title);
+                    GetProps(ebk);
                 }
                 catch (Exception)
                 {
@@ -93,14 +83,24 @@ namespace BookApp_WinForms
                 try
                 {
                     AudioBook abk = (AudioBook)sel;
-                    lst_BookProps.Items.Add(abk.FileSize);
+                    GetProps(abk);
                 }
                 catch (Exception)
                 {
                     MessageBox.Show("Something went wrong", "Error");
                 }
             }
-            //MessageBox.Show(sender.ToString());
+        }
+
+        public void GetProps(object bk)
+        {
+            foreach (var prop in bk.GetType().GetProperties())
+            {
+                //reflect into the pbk object to get the properties
+                var name = prop.Name;
+                var value = prop.GetValue(bk);
+                lst_BookProps.Items.Add(name + " " + value);
+            }
         }
     }
 }

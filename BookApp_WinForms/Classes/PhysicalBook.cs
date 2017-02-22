@@ -40,10 +40,5 @@ namespace BookApp_WinForms
         {
             return Title.ToString() + ": Physical Book";
         }
-
-        public string AllProps()
-        {
-            return "Title: " + Title.ToString() + ", Author: " + Author.ToString() + ", Year: " + Year.ToString() + ", Weight: " + Weight.ToString() + ", PageCount: " + PageCount.ToString();
-        }
     }
 }
