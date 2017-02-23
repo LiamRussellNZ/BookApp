@@ -7,15 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
+using System.IO;
 
 namespace BookApp_WinForms
 {
-    public partial class Form1 : Form
+    public partial class frm_BookApp : Form
     {
-        public Form1()
+        public frm_BookApp()
         {
             InitializeComponent();
         }
+
+        List<Book> bookList = new List<Book>();
+        List<string> bookProp = new List<string>();
 
         private void btn_LoadPhysical_Click(object sender, EventArgs e)
         {
@@ -48,10 +53,33 @@ namespace BookApp_WinForms
             lst_Books.Items.Add(AB1);
             lst_Books.Items.Add(AB2);
             lst_Books.Items.Add(AB3);
+
+            ListViewItem item1 = new ListViewItem(AB1.Year.ToString());
+            item1.SubItems.Add(AB1.Title);
+            item1.SubItems.Add(AB1.Author);
+
+            ListViewItem item2 = new ListViewItem(AB2.Year.ToString());
+            item2.SubItems.Add(AB2.Title);
+            item2.SubItems.Add(AB2.Author);
+
+            ListViewItem item3 = new ListViewItem(AB3.Year.ToString());
+            item3.SubItems.Add(AB3.Title);
+            item3.SubItems.Add(AB3.Author);
+
+            lstView_BookDetails.Items.Add(item1);
+            lstView_BookDetails.Items.Add(item2);
+            lstView_BookDetails.Items.Add(item3);
+
+            bookList.Add(AB1);
+            bookList.Add(AB2);
+            bookList.Add(AB3);
+
+            GetBooks(bookList);
         }
 
         private void lst_Books_SelectedIndexChanged(object sender, EventArgs e)
         {
+            lstbx_Reflect.Items.Clear(); 
             Book sel = lst_Books.SelectedItems[0] as Book;
 
             if (sel is PhysicalBook)
@@ -92,14 +120,61 @@ namespace BookApp_WinForms
             }
         }
 
-        public void GetProps(object bk)
+        public void GetProps(Book bk)
         {
-            foreach (var prop in bk.GetType().GetProperties())
+            //reflection
+            //GetProperties method returns array
+            PropertyInfo[] bkInfo = bk.GetType().GetProperties();
+            foreach (PropertyInfo propertyinfo in bkInfo)
             {
-                //reflect into the pbk object to get the properties
-                var name = prop.Name;
-                var value = prop.GetValue(bk);
-                lst_BookProps.Items.Add(name + " " + value);
+                var name = propertyinfo.Name;
+                var value = propertyinfo.GetValue(bk);
+                //lstbx_Reflect.Items.Add(name+": "+value);
+            }
+        }
+
+        public void GetBooks(List<Book> bkList)
+        {
+            //this method uses reflection
+            //GetProperties method returns array
+            //foreach loop iterates over the book items in the list
+            foreach (var book in bkList)
+            {
+                PropertyInfo[] bkInfo = book.GetType().GetProperties();
+                foreach (PropertyInfo propertyinfo in bkInfo)
+                {
+                    var name = propertyinfo.Name;
+                    var value = propertyinfo.GetValue(book);
+                    bookProp.Add(name + ": " + value);
+                }
+            }
+        }
+
+        private void btn_SaveText_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (bookProp.Count!=0)
+                {
+                    StreamWriter myWriter = new StreamWriter("Book.txt", false);
+
+
+                    GetBooks(bookList);
+                    foreach (var item in bookProp)
+                    {
+                        myWriter.WriteLine(item);
+                    }
+                    myWriter.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Please add some books", "Error");
+                }
+                
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Something went wrong when trying to save out to file");
             }
         }
     }

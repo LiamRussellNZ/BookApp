@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookApp_WinForms
 {
-    abstract class Book
+    abstract public class Book
     {
         //Fields
         private string title;
