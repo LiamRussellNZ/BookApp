@@ -18,6 +18,9 @@ namespace BookApp_WinForms
             set {  fileformat = value;}
         }
 
+        //implement interface
+        public int PageCount { get; set; }
+
         //constructor
         public EBook() { }
 

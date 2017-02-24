@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookApp_WinForms
 {
-    abstract class DigitalBook : Book,IPageCount
+    abstract class DigitalBook : Book
     {
         //Field
         private int filesize;
@@ -17,9 +17,6 @@ namespace BookApp_WinForms
             get {return filesize;}
             set{ filesize = value; }
         }
-
-        //IPageCount implementaion
-        public int PageCount { get; set; }
 
         //Constructor
         public DigitalBook() { }

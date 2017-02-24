@@ -74,12 +74,12 @@ namespace BookApp_WinForms
             bookList.Add(AB2);
             bookList.Add(AB3);
 
-            GetBooks(bookList);
+            //GetBooks(bookList);
         }
 
         private void lst_Books_SelectedIndexChanged(object sender, EventArgs e)
         {
-            lstbx_Reflect.Items.Clear(); 
+            lstbx_Reflect.Items.Clear();
             Book sel = lst_Books.SelectedItems[0] as Book;
 
             if (sel is PhysicalBook)
@@ -87,7 +87,7 @@ namespace BookApp_WinForms
                 try
                 {
                     PhysicalBook pbk = (PhysicalBook)sel;
-                    GetProps(pbk);
+                    LoopProp(sel);
                 }
                 catch (Exception)
                 {
@@ -133,44 +133,65 @@ namespace BookApp_WinForms
             }
         }
 
-        public void GetBooks(List<Book> bkList)
+        public List<string> LoopProp(Book item)
+        {
+            List<string> prop = new List<string>();
+            try
+            {
+                //get properties for each book in the passed bkList
+                PropertyInfo[] bkInfo = item.GetType().GetProperties();
+                foreach (PropertyInfo propertyinfo in bkInfo)
+                {
+                    var name = propertyinfo.Name;
+                    var value = propertyinfo.GetValue(item);
+                    prop.Add(name + ": " + value);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error in the LoopProp method");
+            }
+            return prop;
+        }
+
+        public void SaveText(List<Book> bkList)
         {
             //this method uses reflection
             //GetProperties method returns array
             //foreach loop iterates over the book items in the list
+            StreamWriter myWriter = new StreamWriter("Book.txt", false);
             foreach (var book in bkList)
             {
+                //get properties for each book in the passed bkList
                 PropertyInfo[] bkInfo = book.GetType().GetProperties();
-                foreach (PropertyInfo propertyinfo in bkInfo)
+                //foreach property get the name and value of the property
+                if (book is AudioBook)
                 {
-                    var name = propertyinfo.Name;
-                    var value = propertyinfo.GetValue(book);
-                    bookProp.Add(name + ": " + value);
+                    var list = LoopProp(book);
+                    
+                    foreach (var item in list)
+                    {
+                        myWriter.WriteLine(item);
+                    }
+                    
+                    
                 }
+                else if (book is PhysicalBook)
+                {
+
+                }
+
             }
+            myWriter.Close();
         }
 
         private void btn_SaveText_Click(object sender, EventArgs e)
         {
             try
             {
-                if (bookProp.Count!=0)
-                {
-                    StreamWriter myWriter = new StreamWriter("Book.txt", false);
+                //bookList contains book objects
+                SaveText(bookList);
 
-
-                    GetBooks(bookList);
-                    foreach (var item in bookProp)
-                    {
-                        myWriter.WriteLine(item);
-                    }
-                    myWriter.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Please add some books", "Error");
-                }
-                
             }
             catch (Exception)
             {
