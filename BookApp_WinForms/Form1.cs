@@ -22,65 +22,10 @@ namespace BookApp_WinForms
         List<Book> bookList = new List<Book>();
         List<string> bookProp = new List<string>();
 
-        private void btn_LoadPhysical_Click(object sender, EventArgs e)
-        {
-            PhysicalBook PB1 = new PhysicalBook("The Handmaid's Tale", "Margaret Atwood", 1985, 1.2, 311);
-            PhysicalBook PB2 = new PhysicalBook("1984", "George Orwell", 1949, 1.2, 287);
-            PhysicalBook PB3 = new PhysicalBook("Brave New World", "Aldous Huxley", 1932, 1.2, 311);
-
-            lst_Books.Items.Add(PB1);
-            lst_Books.Items.Add(PB2);
-            lst_Books.Items.Add(PB3);
-        }
-
-        private void btn_LoadeBooks_Click(object sender, EventArgs e)
-        {
-            EBook EB1 = new EBook("Tom Clancy True Faith and Allegiance", "Mark Greaney", 2016, 5351, "Kindle Edition", 750);
-            EBook EB2 = new EBook("Path of Destruction: Star Wars Legends (Darth Bane)", "Drew Karpyshyn", 2011, 6906, "Kindle Edition", 338);
-            EBook EB3 = new EBook("Shadow Kill: A Strikeback Novel", "Chris Ryan", 2017, 1861, "Kindle Edition", 320);
-
-            lst_Books.Items.Add(EB1);
-            lst_Books.Items.Add(EB2);
-            lst_Books.Items.Add(EB3);
-        }
-
-        private void btn_LoadAudioBooks_Click(object sender, EventArgs e)
-        {
-            AudioBook AB1 = new AudioBook("The Princess Diarist", "Carrie Fisher", 2016, 56222, 310, "Carrie Fisher, Billie Lourd");
-            AudioBook AB2 = new AudioBook("Scrappy Little Nobody", "Anna Kendrick", 2016, 56222, 360, "Anna Kendrick");
-            AudioBook AB3 = new AudioBook("Elon Musk", "Ashlee Vance", 2016, 56222, 803, "Fred Sanders");
-
-            lst_Books.Items.Add(AB1);
-            lst_Books.Items.Add(AB2);
-            lst_Books.Items.Add(AB3);
-
-            ListViewItem item1 = new ListViewItem(AB1.Year.ToString());
-            item1.SubItems.Add(AB1.Title);
-            item1.SubItems.Add(AB1.Author);
-
-            ListViewItem item2 = new ListViewItem(AB2.Year.ToString());
-            item2.SubItems.Add(AB2.Title);
-            item2.SubItems.Add(AB2.Author);
-
-            ListViewItem item3 = new ListViewItem(AB3.Year.ToString());
-            item3.SubItems.Add(AB3.Title);
-            item3.SubItems.Add(AB3.Author);
-
-            lstView_BookDetails.Items.Add(item1);
-            lstView_BookDetails.Items.Add(item2);
-            lstView_BookDetails.Items.Add(item3);
-
-            bookList.Add(AB1);
-            bookList.Add(AB2);
-            bookList.Add(AB3);
-
-            //GetBooks(bookList);
-        }
-
         private void lst_Books_SelectedIndexChanged(object sender, EventArgs e)
         {
             lstbx_Reflect.Items.Clear();
-            Book sel = lst_Books.SelectedItems[0] as Book;
+            Book sel = lstbx_Reflect.SelectedItems[0] as Book;
 
             if (sel is PhysicalBook)
             {
@@ -142,6 +87,7 @@ namespace BookApp_WinForms
                 PropertyInfo[] bkInfo = item.GetType().GetProperties();
                 foreach (PropertyInfo propertyinfo in bkInfo)
                 {
+                    
                     var name = propertyinfo.Name;
                     var value = propertyinfo.GetValue(item);
                     prop.Add(name + ": " + value);
@@ -156,25 +102,23 @@ namespace BookApp_WinForms
 
         public void SaveText(List<Book> bkList)
         {
-            //this method uses reflection
-            //GetProperties method returns array
-            //foreach loop iterates over the book items in the list
+            //Declare and initilise a streamwriter object
             StreamWriter myWriter = new StreamWriter("Book.txt", false);
+
+            //foreach loop iterates over the book items in the list passed to the method
             foreach (var book in bkList)
             {
-                //get properties for each book in the passed bkList
-                PropertyInfo[] bkInfo = book.GetType().GetProperties();
-                //foreach property get the name and value of the property
+                //get the properties for each book store the result in generic
+                var list = LoopProp(book);
                 if (book is AudioBook)
                 {
-                    var list = LoopProp(book);
-                    
-                    foreach (var item in list)
-                    {
-                        myWriter.WriteLine(item);
-                    }
-                    
-                    
+                    //myWriter.Write("AudioBook, ");
+                    AudioBook abk = (AudioBook)book;
+                    myWriter.WriteLine("AudioBook," + abk.Title + "," + abk.Author + "," + abk.Year + "," + abk.FileSize + "," + abk.Length + "," + abk.Narrator);
+                    //foreach (var item in list)
+                    //{
+                    //    myWriter.Write(item.ToString() + ", ");
+                    //}
                 }
                 else if (book is PhysicalBook)
                 {
@@ -182,6 +126,7 @@ namespace BookApp_WinForms
                 }
 
             }
+            //Close the streamwriter object
             myWriter.Close();
         }
 
@@ -189,14 +134,59 @@ namespace BookApp_WinForms
         {
             try
             {
-                //bookList contains book objects
                 SaveText(bookList);
-
             }
             catch (Exception)
             {
                 MessageBox.Show("Something went wrong when trying to save out to file");
             }
+        }
+
+        private void LoadText()
+        {
+            //Declare and intilise streamreader object using boot.text file 
+            StreamReader bookFileReader = new StreamReader("Book.txt");
+
+            //while the file contains line of text execute this code block
+            while (!bookFileReader.EndOfStream)
+            {
+                //declare new string set it to equal line from textfile
+                string temp = bookFileReader.ReadLine();
+                //declare string array and split the above string on the "," charecter
+                string[] n = temp.Split(',');
+                /*depending object type the execute appropriate if statment
+                 create object using parameterised constructor
+                 add object to bookList*/
+                if (n[0] == "AudioBook")
+                {
+                    AudioBook a = new AudioBook(n[1],n[2],int.Parse(n[3]),int.Parse(n[4]),int.Parse(n[5]),n[6]);
+                    bookList.Add(a);
+                }
+                else if (n[0] == "EBook")
+                {
+                    EBook e = new EBook(n[1], n[2], int.Parse(n[3]), int.Parse(n[4]), n[5], int.Parse(n[6]));
+                    bookList.Add(e);
+                }
+                else if (n[0] == "PhysicalBook")
+                {
+                    PhysicalBook p = new PhysicalBook(n[1], n[2], int.Parse(n[3]), double.Parse(n[4]), int.Parse(n[5]));
+                    bookList.Add(p);
+                }
+            }
+            foreach (var book in bookList)
+            {
+                ListViewItem item = new ListViewItem(book.Title);
+                item.SubItems.Add(book.Author);
+                item.SubItems.Add(book.Year.ToString());
+
+                lstView_BookDetails.Items.Add(item);
+            }
+        }
+
+
+        private void btn_LoadBooks_Click(object sender, EventArgs e)
+        {
+            LoadText();
         }
     }
 }
