@@ -24,45 +24,7 @@ namespace BookApp_WinForms
 
         private void lst_Books_SelectedIndexChanged(object sender, EventArgs e)
         {
-            lstbx_Reflect.Items.Clear();
-            Book sel = lstbx_Reflect.SelectedItems[0] as Book;
-
-            if (sel is PhysicalBook)
-            {
-                try
-                {
-                    PhysicalBook pbk = (PhysicalBook)sel;
-                    LoopProp(sel);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Something went wrong", "Error");
-                }
-            }
-            else if (sel is EBook)
-            {
-                try
-                {
-                    EBook ebk = (EBook)sel;
-                    GetProps(ebk);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Something went wrong", "Error");
-                }
-            }
-            else if (sel is AudioBook)
-            {
-                try
-                {
-                    AudioBook abk = (AudioBook)sel;
-                    GetProps(abk);
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Something went wrong", "Error");
-                }
-            }
+            
         }
 
         public void GetProps(Book bk)
@@ -74,7 +36,7 @@ namespace BookApp_WinForms
             {
                 var name = propertyinfo.Name;
                 var value = propertyinfo.GetValue(bk);
-                //lstbx_Reflect.Items.Add(name+": "+value);
+                lstbx_Reflect.Items.Add(name+": "+value);
             }
         }
 
@@ -175,7 +137,8 @@ namespace BookApp_WinForms
             }
             foreach (var book in bookList)
             {
-                ListViewItem item = new ListViewItem(book.Title);
+                //ListViewItems Tag field stores a reference to the book obj
+                ListViewItem item = new ListViewItem(book.Title) { Tag = book };
                 item.SubItems.Add(book.Author);
                 item.SubItems.Add(book.Year.ToString());
 
@@ -187,6 +150,57 @@ namespace BookApp_WinForms
         private void btn_LoadBooks_Click(object sender, EventArgs e)
         {
             LoadText();
+        }
+
+        private void lstView_BookDetails_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lstView_BookDetails.SelectedItems.Count != 0)
+            {
+                lstbx_Reflect.Items.Clear();
+                var sel = lstView_BookDetails.SelectedItems[0].Tag as Book;
+
+
+                if (sel is PhysicalBook)
+                {
+                    try
+                    {
+                        PhysicalBook pbk = (PhysicalBook)sel;
+                        var bookprop = LoopProp(sel);
+                        foreach (var item in bookprop)
+                        {
+                            lstbx_Reflect.Items.Add(item.ToString());
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Something went wrong", "Error");
+                    }
+                }
+                //else if (sel is EBook)
+                //{
+                //    try
+                //    {
+                //        EBook ebk = (EBook)sel;
+                //        GetProps(ebk);
+                //    }
+                //    catch (Exception)
+                //    {
+                //        MessageBox.Show("Something went wrong", "Error");
+                //    }
+                //}
+                //else if (sel is AudioBook)
+                //{
+                //    try
+                //    {
+                //        AudioBook abk = (AudioBook)sel;
+                //        GetProps(abk);
+                //    }
+                //    catch (Exception)
+                //    {
+                //        MessageBox.Show("Something went wrong", "Error");
+                //    }
+                //} 
+            }
         }
     }
 }

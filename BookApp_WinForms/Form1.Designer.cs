@@ -52,6 +52,7 @@
             this.lstView_BookDetails.TabIndex = 6;
             this.lstView_BookDetails.UseCompatibleStateImageBehavior = false;
             this.lstView_BookDetails.View = System.Windows.Forms.View.Details;
+            this.lstView_BookDetails.SelectedIndexChanged += new System.EventHandler(this.lstView_BookDetails_SelectedIndexChanged);
             // 
             // GridTitle
             // 
