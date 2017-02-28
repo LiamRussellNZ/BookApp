@@ -157,7 +157,7 @@ namespace BookApp_WinForms
             if (lstView_BookDetails.SelectedItems.Count != 0)
             {
                 lstbx_Reflect.Items.Clear();
-                var sel = lstView_BookDetails.SelectedItems[0].Tag as Book;
+                Book sel = lstView_BookDetails.SelectedItems[0].Tag as Book;
 
 
                 if (sel is PhysicalBook)
@@ -176,30 +176,38 @@ namespace BookApp_WinForms
                         MessageBox.Show("Something went wrong", "Error");
                     }
                 }
-                //else if (sel is EBook)
-                //{
-                //    try
-                //    {
-                //        EBook ebk = (EBook)sel;
-                //        GetProps(ebk);
-                //    }
-                //    catch (Exception)
-                //    {
-                //        MessageBox.Show("Something went wrong", "Error");
-                //    }
-                //}
-                //else if (sel is AudioBook)
-                //{
-                //    try
-                //    {
-                //        AudioBook abk = (AudioBook)sel;
-                //        GetProps(abk);
-                //    }
-                //    catch (Exception)
-                //    {
-                //        MessageBox.Show("Something went wrong", "Error");
-                //    }
-                //} 
+                else if (sel is EBook)
+                {
+                    try
+                    {
+                        EBook ebk = (EBook)sel;
+                        var bookprop = LoopProp(sel);
+                        foreach (var item in bookprop)
+                        {
+                            lstbx_Reflect.Items.Add(item.ToString());
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Something went wrong", "Error");
+                    }
+                }
+                else if (sel is AudioBook)
+                {
+                    try
+                    {
+                        AudioBook abk = (AudioBook)sel;
+                        var bookprop = LoopProp(sel);
+                        foreach (var item in bookprop)
+                        {
+                            lstbx_Reflect.Items.Add(item.ToString());
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Something went wrong", "Error");
+                    }
+                }
             }
         }
     }
